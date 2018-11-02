@@ -20,7 +20,7 @@
     
     
     
-    % erode->dilate %nyitás
+    % erode->dilate %zárás
     J = imerode(J, SE);
     J = imdilate(J, SE);
     
