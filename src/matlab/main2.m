@@ -1,15 +1,20 @@
+function main2 (impathIN, task, impathOUT)
+
+
 close
 
-I = imread('test0.png');
+I = imread(impathIN);
 
-%task = 'letters'; % letters/words
-task = 'words'; % letters/words
+%task = 'letters'; % letters/words/lines
+%task = 'words'; % letters/words
 
-filter = true;
-noise = 'salt & pepper';
-%noise = 'gaussian';
+filter = false;
+noise = '';
+
 
 if (filter)
+    noise = 'salt & pepper';
+    %noise = 'gaussian';
     I = imnoise(I, noise);
 end
 
@@ -39,8 +44,13 @@ end
 prop = regionprops(img_to_proc, 'BoundingBox');
 BB = cat(1, prop.BoundingBox);
 
-
-%imshow(img);for i=1:size(BB,1), rectangle('Position', BB(i,:),'EdgeColor','r', 'LineWidth', 1, 'LineStyle', '-');end
+if (strcmp(task, 'words') || strcmp(task, 'letters'))
+imshow(I);
+for i=1:size(BB,1)
+    rectangle('Position', BB(i,:),'EdgeColor','r', 'LineWidth', 1, 'LineStyle', '-');
+end
+end
+if (strcmp(task, 'lines'))
 
 %imshow(img);
 for i=1:size(BB,1)
@@ -108,7 +118,7 @@ MASK(yq(in), xq(in)) = 1;
     [x,y,z] = size(I);
     
 
-    figure; imshow(I);
+    %figure; imshow(I);
     
     for i = 1 : x-1
         for j = 1 : y-1
@@ -123,4 +133,7 @@ MASK(yq(in), xq(in)) = 1;
             end
         end        
     end
-figure; imshow(IR);
+%figure; imshow(IR);
+imwrite(IR, impathOUT)
+end
+end
