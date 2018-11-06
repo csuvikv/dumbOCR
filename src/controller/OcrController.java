@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 import javafx.scene.image.Image;
 import view.OcrGUI;
@@ -34,17 +35,24 @@ public class OcrController {
 			e.printStackTrace();
 		}*/
 		
-		/*while(true) {
-			File = new File("../../result.png")
-		}*/
-		
-		
-		file = new File("temp/result.png");
-		if(file.exists()) {
-			System.out.println("File exist");
-			// result = new Image("temp/result.png", true);
-		} else {
-			System.out.println("File not exist");
+		while(true) {
+			file = new File("temp/result.png");
+			if(file.exists()) {
+				
+				try {
+					String tempURL = file.toURI().toURL().toString();
+					result = new Image(tempURL, true);
+				} catch (MalformedURLException e) {
+					System.err.println("Malformed URL!");
+				}
+				
+				break;
+			}
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				System.err.println("Sleep interrupted!");
+			}
 		}
 		
 		System.out.println("Now returning");
