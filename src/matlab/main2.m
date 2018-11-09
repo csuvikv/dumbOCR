@@ -1,12 +1,11 @@
-%function main2 (impathIN, task, impathOUT)
-    import images.*
-    
+function main2 (impathIN, task, impathOUT, hex_code)
     close
 
-    impathIN = 'test0.png';
-    task = 'words';
-    impathOUT = 'impathOUT1.png';
-    
+    %     impathIN = 'testhard.png';
+    %     task = 'letters';
+    %     impathOUT = 'impathOUT1.png';
+    %     hex_code = '#f442e8';
+
     I = imread(impathIN);
 
     %task = 'letters'; % letters/words/lines
@@ -20,10 +19,9 @@
         I = imnoise(I, noise);
     end
 
-    size_of_disk = 10;
-    SE = strel('disk', size_of_disk);
+    img_bw = im2bw(I, 0.80);
 
-    img_bw = im2bw(I);
+    %figure; imshow(img_bw)
 
     img_comple = imcomplement(img_bw);
 
@@ -38,47 +36,87 @@
         'No noise on the picture'
     end
 
-    % IF WORDS WHAT U WANT
+    prop = regionprops(img_to_proc, 'BoundingBox');
+    BB = cat(1, prop.BoundingBox);
+
+    % IF WORDS OR LETTERS
     if (strcmp(task, 'words'))
+
+
+        size_of_SE = 5;
+        SE = strel('disk', size_of_SE);
+        img_to_proc = imclose(img_to_proc, SE);
+    elseif (strcmp(task, 'letters'))
+
+        % FIND OUT THE DIST BETWEEN LETTERS
+        min_W = 999999999;
+        for i=1:size(BB,1)
+            for j=i+1:size(BB,1)
+                temp = abs((BB(i,2)+BB(i,4))-BB(j,2));
+                if temp<min_W
+                    min_W = temp;
+                end
+            end
+        end
+        min_H = 999999999;
+        for i=1:size(BB,1)
+            for j=i+1:size(BB,1)
+                temp = abs((BB(i,1)-BB(i,3))-BB(j,1));
+                if temp<min_H
+                    min_H = temp;
+                end
+            end
+        end
+
+        if (min_W == 0)
+            min_W=min_w+1;
+        end
+
+        size_of_SE = [min_H+3, min_W];
+        SE = strel('rectangle', size_of_SE);
         img_to_proc = imclose(img_to_proc, SE);
     end
 
     prop = regionprops(img_to_proc, 'BoundingBox');
     BB = cat(1, prop.BoundingBox);
 
-%     % SHOW THE RESULT
-%     if (strcmp(task, 'words') || strcmp(task, 'letters'))
-%         %imshow(I);
-%         for i=1:size(BB,1)
-%             I(BB(i,:),:) = [255,0,0];
-%             %rectangle('Position', BB(i,:),'EdgeColor','r', 'LineWidth', 1, 'LineStyle', '-');
-%         end
-%     end
-    
-%     I(round(BB(1,2)) : , round(BB(1,1)), 1) = 255;
-%     I(round(BB(1,2)), round(BB(1,1)), 2) = 0;
-%     I(round(BB(1,2)), round(BB(1,1)), 3) = 0;
+    BB = round(BB);
 
-    %h_im = imshow(I);
-    %h = imrect(gca, [19.5 109.5 173 59]);
-    %h = images.roi.Rectangle(gca,'Position',[500,500,1000,1000],'StripeColor','r');
-    h = images.roi.rectangle();
-    mask = createMask(h);
-    
-    
-    
-   % imshow(mask);
-    
+    color = hex2rgb(hex_code, 256);
+
+    % SHOW THE RESULT
+    if (strcmp(task, 'words') || strcmp(task, 'letters'))
+        %imshow(I);
+        for i=1:size(BB,1)
+            %rectangle('Position', BB(i,:),'EdgeColor','r', 'LineWidth', 1, 'LineStyle', '-');
+            %             I(round(BB(i,2)),round(BB(i,1)),1) = 256;
+
+            % PAINT IT BE
+            for k = 1:length(color)
+
+                I(BB(i,2), BB(i,1):BB(i,3)+BB(i,1),k) = color(k);
+                I(BB(i,2):BB(i,4)+BB(i,2), BB(i,1),k) = color(k);
+
+                I(BB(i,2)+BB(i,4), BB(i,1):BB(i,3)+BB(i,1),k) = color(k);
+                I(BB(i,2):BB(i,4)+BB(i,2), BB(i,1)+BB(i,3),k) = color(k);
+
+            end
+        end
+        %SAVE
+        %figure; imshow(I);
+        imwrite(I, impathOUT)
+    end
+
     if (strcmp(task, 'lines'))
         %imshow(img);
         %{
-        for i=1:size(BB,1)
-            rect(i) = rectangle('Position', BB(i,:),'EdgeColor','black', 'LineWidth', 1, 'LineStyle', '-');
-        end
+            for i=1:size(BB,1)
+                rect(i) = rectangle('Position', BB(i,:),'EdgeColor','black', 'LineWidth', 1, 'LineStyle', '-');
+            end
         %}
 
         MASK = logical(size(img_bw));
-        [x,y,z] = size(I);
+        [x,y] = size(I);
 
         for i=1:size(BB,1)
             k = i*6;
@@ -143,7 +181,7 @@
                     if img_bw(i,j) == 0 %BW ben betû van
                         IR(i,j,:) = img_bw(i,j,:);
                     else
-                        IR(i,j,:) = [128,128,0];
+                        IR(i,j,:) = color; %TODO: does it work?
                     end
                 end
             end
@@ -151,4 +189,4 @@
         %figure; imshow(IR);
         imwrite(IR, impathOUT)
     end
-%end
+end
