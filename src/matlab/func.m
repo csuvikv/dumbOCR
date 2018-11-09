@@ -1,9 +1,9 @@
-function func(path)
-    image = imread(path);
+function func(input_path, proc_mode, output_path)
+    image = imread(input_path);
     
     % Do stuff here
     result = image;
     
-    imwrite(result, 'result.jpg', 'jpg');
+    imwrite(result, output_path, 'png');
 end
 
