@@ -21,57 +21,17 @@ public class OcrController {
 		gui.startGUI();
 	}
 
-	public Image getProcessedPicture() {
+	public Image getProcessedPicture(String ProcessMode) {
 		Image result = null;
 		try {
-			result = engine.processPicture("", 30);
+			result = engine.processPicture(ProcessMode, 30);
 		} catch (IOException e) {
-			System.err.println("IOExeption happened while trying to execute the Matlab script!");
+			System.err.println("IOExeption happened while trying to execute the Matlab script!\n"
+					+ e.getMessage());
 		} catch (InterruptedException e) {
 			System.err.println("InterruptedException happened while trying to sleep!");
 		}
-		/*
-		int counter = 0;
-		while(true) {
-			if(counter > 29) {
-				break;
-			} else {
-				++counter;
-			}
-			
-			file = new File(output);
-			if(file.exists()) {
-				try {
-					String tempURL = file.toURI().toURL().toString();
-					result = new Image(tempURL, true);
-				} catch (MalformedURLException e) {
-					System.err.println("Malformed URL!");
-				}
-				
-				break;
-			}
-			System.err.println("Image not found. Retrying... (" + counter + ")");
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				System.err.println("Sleep interrupted!");
-			}
-		}
 		
-		
-		String delc = "del temp/temp,png";
-		System.out.println("exec: " + delc);
-		if(file.exists()) {
-			try {
-				rt.exec(delc);
-			} catch (IOException e) {
-				System.err.println("Exception while trying to delete the temp file!");
-			}
-		}
-		
-		
-		System.out.println("Now returning");
-		*/
 		return result;
 	}
 	
