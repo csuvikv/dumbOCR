@@ -1,4 +1,4 @@
-function main2 (impathIN, task, impathOUT, hex_code)
+function main (impathIN, task, impathOUT, hex_code)
     close
 
     %     impathIN = 'testhard.png';
