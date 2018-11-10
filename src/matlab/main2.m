@@ -1,10 +1,11 @@
 function main2 (impathIN, task, impathOUT, hex_code)
     close
 
-    %     impathIN = 'testhard.png';
-    %     task = 'letters';
-    %     impathOUT = 'impathOUT1.png';
-    %     hex_code = '#f442e8';
+%         impathIN = 'testhard.png';
+%         task = 'words';
+%  
+%         impathOUT = 'impathOUT1.png';
+%         hex_code = '#f442e8';
 
     I = imread(impathIN);
 
@@ -42,8 +43,20 @@ function main2 (impathIN, task, impathOUT, hex_code)
     % IF WORDS OR LETTERS
     if (strcmp(task, 'words'))
 
-
-        size_of_SE = 5;
+        dist_b_letters = [];
+        
+        min_W = 999999999;
+        for i=1:size(BB,1)
+            for j=i+1:size(BB,1)
+                temp = abs((BB(i,2)+BB(i,4))-BB(j,2));
+                if temp<min_W
+                    min_W = temp;
+                end
+            end
+            dist_b_letters(i) = min_W;
+        end
+        
+        size_of_SE = round(max(dist_b_letters)); %5 for testhard.png
         SE = strel('disk', size_of_SE);
         img_to_proc = imclose(img_to_proc, SE);
     elseif (strcmp(task, 'letters'))
@@ -69,14 +82,35 @@ function main2 (impathIN, task, impathOUT, hex_code)
         end
 
         if (min_W == 0)
-            min_W=min_w+1;
+            min_W=min_W+1;
         end
 
         size_of_SE = [min_H+3, min_W];
         SE = strel('rectangle', size_of_SE);
         img_to_proc = imclose(img_to_proc, SE);
+        
+    elseif (strcmp(task, 'lines'))
+        size_of = max(BB(:,4));
+        size_of = round(size_of);
+        
+        min_H = 999999999;
+        for i=1:size(BB,1)
+            for j=i+1:size(BB,1)
+                temp = abs((BB(i,1)-BB(i,3))-BB(j,1));
+                if temp<min_H
+                    min_H = temp;
+                end
+            end
+        end
+        
+        size_of_SE = [min_H+3, size_of];
+        SE = strel('rectangle', size_of_SE);
+        img_to_proc = imclose(img_to_proc, SE);
+        
     end
 
+    %imshow(img_to_proc);
+    
     prop = regionprops(img_to_proc, 'BoundingBox');
     BB = cat(1, prop.BoundingBox);
 
@@ -85,12 +119,11 @@ function main2 (impathIN, task, impathOUT, hex_code)
     color = hex2rgb(hex_code, 256);
 
     % SHOW THE RESULT
-    if (strcmp(task, 'words') || strcmp(task, 'letters'))
-        %imshow(I);
+    if (strcmp(task, 'words') || strcmp(task, 'letters') || strcmp(task, 'lines'))
+%         imshow(I);
         for i=1:size(BB,1)
-            %rectangle('Position', BB(i,:),'EdgeColor','r', 'LineWidth', 1, 'LineStyle', '-');
-            %             I(round(BB(i,2)),round(BB(i,1)),1) = 256;
-
+%             rectangle('Position', BB(i,:),'EdgeColor','r', 'LineWidth', 1, 'LineStyle', '-');
+            
             % PAINT IT BE
             for k = 1:length(color)
 
@@ -100,14 +133,14 @@ function main2 (impathIN, task, impathOUT, hex_code)
                 I(BB(i,2)+BB(i,4), BB(i,1):BB(i,3)+BB(i,1),k) = color(k);
                 I(BB(i,2):BB(i,4)+BB(i,2), BB(i,1)+BB(i,3),k) = color(k);
 
-            end
+           end
         end
         %SAVE
         %figure; imshow(I);
         imwrite(I, impathOUT)
     end
 
-    if (strcmp(task, 'lines'))
+    if (strcmp(task, 'linesOFF'))
         %imshow(img);
         %{
             for i=1:size(BB,1)
