@@ -21,10 +21,10 @@ public class OcrController {
 		gui.startGUI();
 	}
 
-	public Image getProcessedPicture(String ProcessMode) {
+	public Image getProcessedPicture(String ProcessMode, String color) {
 		Image result = null;
 		try {
-			result = engine.processPicture(ProcessMode, 30);
+			result = engine.processPicture(ProcessMode, color, 60);
 		} catch (IOException e) {
 			System.err.println("IOExeption happened while trying to execute the Matlab script!\n"
 					+ e.getMessage());

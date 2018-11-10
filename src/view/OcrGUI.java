@@ -116,7 +116,7 @@ public class OcrGUI extends Application {
     		alert.setContentText("A \"Kép betöltése\" gombra kattintva és egy képet kiválasztva lehet képet betölteni.");
     		alert.showAndWait();
     	} else {
-    		Image processedImage = controller.getProcessedPicture("");
+    		Image processedImage = controller.getProcessedPicture("letters", "#0000FF");
     		if (processedImage == null) {
     			Alert alert = new Alert(AlertType.WARNING);
     			alert.setTitle("Hiba");

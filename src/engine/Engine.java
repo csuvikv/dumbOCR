@@ -9,29 +9,36 @@ import view.OcrGUI;
 public class Engine {
 	private final static String mPlacePar = "'src/matlab'";
 	private final static String mCommand = "matlab -nodesktop -nosplash -minimize -r";
-	private final static String mFile = "func";
+	private final static String mFile = "main";
 	private final static String output = "temp/temp.png";
 
-	public Image processPicture(String procMode, int numOfMaxTries) throws IOException, InterruptedException {
+	public Image processPicture(String procMode, String color, int numOfMaxTries) throws IOException, InterruptedException {
 		Image result = null;
 		Runtime rt = Runtime.getRuntime();
-		String procFilePar = "'" + OcrGUI.getImageFile().getAbsolutePath() + "'";
-		String procModePar = "'" + procMode + "'";
-		String outputPar = "'" + output + "'";
-		String command = mCommand + " \"addpath(" + mPlacePar + "); " + mFile +
-				"(" + procFilePar + "," + procModePar + "," + outputPar + "); quit\"";
+		String command = null;
+		
+		boolean debugMode = true;
+		if(debugMode) {
+			command = mCommand + " \"addpath(" + mPlacePar + "); " + mFile +
+					"('" + OcrGUI.getImageFile().getAbsolutePath() + "','" + procMode +
+					"','" + output + "','" + color + "'); quit\"";
+		} else {
+			command = mCommand + " \"addpath(" + mPlacePar + "); try, " + mFile +
+					"('" + OcrGUI.getImageFile().getAbsolutePath() + "','" + procMode +
+					"','" + output + "','" + color + "'), end; quit\"";
+		}
 		
 		System.out.println("exec: " + command);
 		rt.exec(command);
 		System.out.println("Matlab script execution is successful.");
 		
-		File tempFile = new File(output);;
+		File tempFile = new File(output);
 		if(tempFile.exists()) {
 			System.out.print("Clearing temp folder...");
 			tempFile.delete();
 			System.out.println(" Cleared.");
 		} else {
-			System.out.println("'temp' folder is empty. Nothing to do.");
+			System.out.println("temp folder is empty. Nothing to do.");
 		}
 		
 		int tryCounter = 1;
@@ -54,19 +61,6 @@ public class Engine {
 		if(isFileExist) {
 			String tempFileURL = tempFile.toURI().toURL().toString();
 			result = new Image(tempFileURL, true);
-			tryCounter = 1;
-			while(true) {
-				if(tempFile.delete()) {
-					System.out.println("Temp file sucessfully deleted.");
-					break;
-				} else if(tryCounter >= 10) {
-					System.out.println("Temp file cannot be deleted.");
-					break;
-				}
-				
-				Thread.sleep(1000);
-			}
-			
 		} else {
 			System.err.println("Opening the temp file is failed, returning to caller.");
 		}
