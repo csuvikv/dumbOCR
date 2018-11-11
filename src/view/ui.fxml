@@ -8,7 +8,10 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -35,7 +38,7 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane fx:id="fullScreenButton" maxHeight="-1.0" maxWidth="-1.0" onMouseClicked="#loadFullScreen" prefHeight="295.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+    <AnchorPane fx:id="fullScreenButton" maxHeight="-1.0" maxWidth="-1.0" minHeight="540.0" onMouseClicked="#loadFullScreen" prefHeight="540.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
          <children>
             <GridPane layoutX="14.0" layoutY="12.0" prefHeight="348.0" prefWidth="612.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
               <columnConstraints>
@@ -43,10 +46,11 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="308.0" minWidth="10.0" prefWidth="306.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="111.0" minHeight="0.0" prefHeight="37.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="275.0" minHeight="10.0" prefHeight="87.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="295.0" minHeight="0.0" prefHeight="31.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="295.0" minHeight="0.0" prefHeight="195.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="111.0" minHeight="0.0" prefHeight="27.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="275.0" minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="295.0" minHeight="0.0" prefHeight="37.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="295.0" minHeight="10.0" prefHeight="38.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="353.0" minHeight="0.0" prefHeight="318.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label text="Kép betöltése:" GridPane.valignment="CENTER" />
@@ -62,15 +66,19 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <CheckBox fx:id="characterCB" mnemonicParsing="false" onAction="#enableCharacter" text="Karakterek" />
-                        <CheckBox fx:id="lineCB" mnemonicParsing="false" onAction="#enableLine" text="Sorok" GridPane.rowIndex="1" />
-                        <CheckBox fx:id="paragraphCB" mnemonicParsing="false" onAction="#enableParagraph" text="Bekezdések" GridPane.rowIndex="2" />
                         <ColorPicker fx:id="lineColor" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <ColorPicker fx:id="paragraphColor" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <ColorPicker fx:id="characterColor" disable="true" GridPane.columnIndex="1" />
+                        <ColorPicker fx:id="characterColor" disable="false" GridPane.columnIndex="1" />
+                        <RadioButton fx:id="characterCB" mnemonicParsing="false" onAction="#enableCharacter" selected="true" text="Karakterek">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="default_" />
+                           </toggleGroup>
+                        </RadioButton>
+                        <RadioButton fx:id="lineCB" mnemonicParsing="false" onAction="#enableLine" text="Sorok" toggleGroup="$default_" GridPane.rowIndex="1" />
+                        <RadioButton fx:id="paragraphCB" mnemonicParsing="false" onAction="#enableParagraph" text="Bekezdések" toggleGroup="$default_" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
-                  <Button fx:id="runButton" mnemonicParsing="false" onAction="#run" text="Futtatás" GridPane.rowIndex="2" />
+                  <Button fx:id="runButton" mnemonicParsing="false" onAction="#run" text="Futtatás" GridPane.rowIndex="3" />
                   <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
                      <children>
                         <Button fx:id="loadFile" mnemonicParsing="false" text="Kép betöltése" HBox.hgrow="ALWAYS" />
@@ -81,7 +89,19 @@
                         </Label>
                      </children>
                   </HBox>
-                  <ImageView fx:id="imageView" fitHeight="166.0" fitWidth="552.0" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+                  <ImageView fx:id="originalImage" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4" />
+                  <ImageView fx:id="imageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <CheckBox fx:id="enableTresholdiingButton" mnemonicParsing="false" onAction="#enableTresholdiing" text="Kézi küszöbölés" GridPane.rowIndex="2" />
+                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <children>
+                        <Slider fx:id="treshold" disable="true" prefHeight="37.0" prefWidth="226.0" />
+                        <Button fx:id="applyTresholdButton" disable="true" mnemonicParsing="false" onAction="#applyTreshold" prefWidth="64.0" text="Alkalmaz">
+                           <HBox.margin>
+                              <Insets left="6.0" top="6.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </GridPane>
             <Button fx:id="fullScreen" disable="true" layoutX="431.0" layoutY="334.0" mnemonicParsing="false" onAction="#loadFullScreen" opacity="0" prefHeight="40.0" prefWidth="40.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />

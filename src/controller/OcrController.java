@@ -1,8 +1,6 @@
 package controller;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import engine.Engine;
 import javafx.scene.image.Image;
@@ -36,6 +34,11 @@ public class OcrController {
 	}
 	
 	public Image getLoadedImage() {
+		return new Image(OcrGUI.getImageFile().toURI().toString());
+	}
+
+	public Image getTresholdedPicture(double value) {
+		// TODO: treshold the image; return null if not succesfull
 		return new Image(OcrGUI.getImageFile().toURI().toString());
 	}
 }

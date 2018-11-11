@@ -20,6 +20,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -44,14 +45,27 @@ public class OcrGUI extends Application {
 	private Button fullScreen;
 	
 	@FXML
+	private Button applyTresholdButton;
+	
+	@FXML
 	private ImageView imageView;
+	
+	@FXML
+	private ImageView originalImage;
+	
+	@FXML
+	private Slider treshold;
 	
 	private Label label;
 	private FileChooser fileChooser;
 	private final OcrController controller = application.Main.controller;
 	private static File imageFile;
-	private Desktop desktop = Desktop.getDesktop();
+	private static Image processedImage;
 	private static Stage stage;
+	private String mode;
+	private Color color;
+	private Desktop desktop = Desktop.getDesktop();
+	
 	
 	@Override
     public void start(Stage primaryStage) {
@@ -77,8 +91,11 @@ public class OcrGUI extends Application {
 				    	configureFileChooser(fileChooser);
 				        imageFile = fileChooser.showOpenDialog(primaryStage);
 				        label = (Label) primaryStage.getScene().lookup("#fileLabel");
+				        originalImage = (ImageView) primaryStage.getScene().lookup("#originalImage");
+				        
 				        if (imageFile != null) {
 				        	label.setText(imageFile.getName());
+				        	originalImage.setImage(new Image(imageFile.toURI().toString()));
 				        } else {
 				        	label.setText("Sikertelen kép betöltés!");
 				        }
@@ -110,19 +127,16 @@ public class OcrGUI extends Application {
     
     public void run() {
     	if (imageFile == null) {
-    		Alert alert = new Alert(AlertType.ERROR);
-    		alert.setTitle("Hiba");
-    		alert.setHeaderText("A futtatáshoz be kell tölteni egy képet!");
-    		alert.setContentText("A \"Kép betöltése\" gombra kattintva és egy képet kiválasztva lehet képet betölteni.");
-    		alert.showAndWait();
+    		constructAlert("futtatáshoz");
     	} else {
-    		Image processedImage = controller.getProcessedPicture("letters", "#0000FF");
+    		
+    		if (color == null) {
+    			color = characterColor.getValue();
+    		}
+    		processedImage = controller.getProcessedPicture(mode, color.toString());
+    		
     		if (processedImage == null) {
-    			Alert alert = new Alert(AlertType.WARNING);
-    			alert.setTitle("Hiba");
-    			alert.setHeaderText("Nem sikerült a futtatás.");
-    			alert.setContentText("Próbálja újra.");
-    			alert.showAndWait();
+    			constructWarning("futtatás");
     		} else {
 	        	fullScreen.setOpacity(1);
 	        	fullScreen.setDisable(false);
@@ -134,9 +148,14 @@ public class OcrGUI extends Application {
     	}
     }
     
-    public void loadFullScreen() {
+    @SuppressWarnings("deprecation")
+	public void loadFullScreen() {
     	try {
-            desktop.open(imageFile);
+    		if (desktop != null && processedImage != null) {
+    			desktop.open(new File(processedImage.impl_getUrl().substring(5)));
+    		} else {
+    			throw new IOException("");
+    		}
         } catch (IOException ex) {
         	System.out.println("Failed to load image into desktop!");
         }
@@ -147,11 +166,7 @@ public class OcrGUI extends Application {
     	Image processedImage = imageView.getImage();
     	
     	if (processedImage == null) {
-    		Alert alert = new Alert(AlertType.ERROR);
-    		alert.setTitle("Hiba");
-    		alert.setHeaderText("A mentéshez be kell tölteni egy képet!");
-    		alert.setContentText("A \"Kép betöltése\" gombra kattintva és egy képet kiválasztva lehet képet betölteni majd futtatni.");
-    		alert.showAndWait();
+    		constructAlert("mentéshez");
     	} else {
     		FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Feldolgozott kép mentése...");
@@ -180,19 +195,69 @@ public class OcrGUI extends Application {
     
     public void enableCharacter() {
     	characterColor.setValue(Color.GREEN);
-    	characterColor.setDisable(!characterColor.isDisabled());
+    	characterColor.setDisable(false);
+    	lineColor.setDisable(true);
+    	paragraphColor.setDisable(true);
+    	mode = "character";
+    	color = characterColor.getValue();
     }
     
     public void enableLine() {
     	lineColor.setValue(Color.RED);
-    	lineColor.setDisable(!lineColor.isDisabled());
+    	lineColor.setDisable(false);
+    	paragraphColor.setDisable(true);
+    	characterColor.setDisable(true);
+    	mode = "line";
+    	color = lineColor.getValue();
     }
     
     public void enableParagraph() {
     	paragraphColor.setValue(Color.BLUE);
-    	paragraphColor.setDisable(!paragraphColor.isDisabled());
+    	paragraphColor.setDisable(false);
+    	lineColor.setDisable(true);
+    	characterColor.setDisable(true);
+    	mode = "paragraph";
+    	color = paragraphColor.getValue();
+    }
+    
+    public void enableTresholdiing() {
+    	treshold.setDisable(!treshold.isDisable());
+    	applyTresholdButton.setDisable(!applyTresholdButton.isDisable());
     }
 
+    public void applyTreshold() {
+    	if (imageFile == null) {
+    		constructAlert("küszöböléshez");
+    	} else {
+    		
+    		Image tresholdedImage = controller.getTresholdedPicture(treshold.getValue());
+    		
+    		if (tresholdedImage == null) {
+    			constructWarning("küszöbölés");
+    		} else {
+	        	imageFile = new File(tresholdedImage.toString());
+	        	originalImage.setImage(tresholdedImage);
+    		}
+    		
+    	}
+    }
+    
+    public void constructAlert(String errorRoot) {
+    	Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle("Hiba");
+		alert.setHeaderText("A " + errorRoot + " be kell tölteni egy képet!");
+		alert.setContentText("A \"Kép betöltése\" gombra kattintva és egy képet kiválasztva lehet képet betölteni.");
+		alert.showAndWait();
+    }
+    
+   public void constructWarning(String errorRoot) {
+	   Alert alert = new Alert(AlertType.WARNING);
+		alert.setTitle("Hiba");
+		alert.setHeaderText("Nem sikerült a " + errorRoot + ".");
+		alert.setContentText("Próbálja újra.");
+		alert.showAndWait();
+   }
+    
 	public ColorPicker getCharacterColor() {
 		return characterColor;
 	}
