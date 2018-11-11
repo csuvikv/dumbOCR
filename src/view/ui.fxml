@@ -74,8 +74,8 @@
                               <ToggleGroup fx:id="default_" />
                            </toggleGroup>
                         </RadioButton>
-                        <RadioButton fx:id="lineCB" mnemonicParsing="false" onAction="#enableLine" text="Sorok" toggleGroup="$default_" GridPane.rowIndex="1" />
-                        <RadioButton fx:id="paragraphCB" mnemonicParsing="false" onAction="#enableParagraph" text="Bekezdések" toggleGroup="$default_" GridPane.rowIndex="2" />
+                        <RadioButton fx:id="lineCB" mnemonicParsing="false" onAction="#enableLine" text="Szavak" toggleGroup="$default_" GridPane.rowIndex="1" />
+                        <RadioButton fx:id="paragraphCB" mnemonicParsing="false" onAction="#enableParagraph" text="Sorok" toggleGroup="$default_" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
                   <Button fx:id="runButton" mnemonicParsing="false" onAction="#run" text="Futtatás" GridPane.rowIndex="3" />

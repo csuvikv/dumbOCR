@@ -62,7 +62,7 @@ public class OcrGUI extends Application {
 	private static File imageFile;
 	private static Image processedImage;
 	private static Stage stage;
-	private String mode;
+	private String mode = "letters";
 	private Color color;
 	private Desktop desktop = Desktop.getDesktop();
 	
@@ -198,7 +198,7 @@ public class OcrGUI extends Application {
     	characterColor.setDisable(false);
     	lineColor.setDisable(true);
     	paragraphColor.setDisable(true);
-    	mode = "character";
+    	mode = "letters";
     	color = characterColor.getValue();
     }
     
@@ -207,7 +207,7 @@ public class OcrGUI extends Application {
     	lineColor.setDisable(false);
     	paragraphColor.setDisable(true);
     	characterColor.setDisable(true);
-    	mode = "line";
+    	mode = "words";
     	color = lineColor.getValue();
     }
     
@@ -216,7 +216,7 @@ public class OcrGUI extends Application {
     	paragraphColor.setDisable(false);
     	lineColor.setDisable(true);
     	characterColor.setDisable(true);
-    	mode = "paragraph";
+    	mode = "lines";
     	color = paragraphColor.getValue();
     }
     
