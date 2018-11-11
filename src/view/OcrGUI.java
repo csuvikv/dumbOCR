@@ -45,9 +45,6 @@ public class OcrGUI extends Application {
 	private Button fullScreen;
 	
 	@FXML
-	private Button applyTresholdButton;
-	
-	@FXML
 	private ImageView imageView;
 	
 	@FXML
@@ -82,6 +79,8 @@ public class OcrGUI extends Application {
 	        
 	        fileChooser = new FileChooser();
 	        
+	        characterColor = (ColorPicker) primaryStage.getScene().lookup("#characterColor");
+	        characterColor.setValue(Color.GREEN);
 	        loadFile = (Button) primaryStage.getScene().lookup("#loadFile");
 	        
 	        loadFile.setOnAction(
@@ -133,7 +132,7 @@ public class OcrGUI extends Application {
     		if (color == null) {
     			color = characterColor.getValue();
     		}
-    		processedImage = controller.getProcessedPicture(mode, color.toString());
+    		processedImage = controller.getProcessedPicture(mode, color.toString(), treshold.getValue());
     		
     		if (processedImage == null) {
     			constructWarning("futtatás");
@@ -222,26 +221,8 @@ public class OcrGUI extends Application {
     
     public void enableTresholdiing() {
     	treshold.setDisable(!treshold.isDisable());
-    	applyTresholdButton.setDisable(!applyTresholdButton.isDisable());
     }
 
-    public void applyTreshold() {
-    	if (imageFile == null) {
-    		constructAlert("küszöböléshez");
-    	} else {
-    		
-    		Image tresholdedImage = controller.getTresholdedPicture(treshold.getValue());
-    		
-    		if (tresholdedImage == null) {
-    			constructWarning("küszöbölés");
-    		} else {
-	        	imageFile = new File(tresholdedImage.toString());
-	        	originalImage.setImage(tresholdedImage);
-    		}
-    		
-    	}
-    }
-    
     public void constructAlert(String errorRoot) {
     	Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Hiba");

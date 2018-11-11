@@ -19,7 +19,7 @@ public class OcrController {
 		gui.startGUI();
 	}
 
-	public Image getProcessedPicture(String ProcessMode, String color) {
+	public Image getProcessedPicture(String ProcessMode, String color, double treshold) {
 		Image result = null;
 		try {
 			result = engine.processPicture(ProcessMode, color, 60);
@@ -34,11 +34,6 @@ public class OcrController {
 	}
 	
 	public Image getLoadedImage() {
-		return new Image(OcrGUI.getImageFile().toURI().toString());
-	}
-
-	public Image getTresholdedPicture(double value) {
-		// TODO: treshold the image; return null if not succesfull
 		return new Image(OcrGUI.getImageFile().toURI().toString());
 	}
 }

@@ -68,7 +68,7 @@
                      <children>
                         <ColorPicker fx:id="lineColor" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <ColorPicker fx:id="paragraphColor" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <ColorPicker fx:id="characterColor" disable="false" GridPane.columnIndex="1" />
+                        <ColorPicker fx:id="characterColor" disable="false" GridPane.columnIndex="1"/>
                         <RadioButton fx:id="characterCB" mnemonicParsing="false" onAction="#enableCharacter" selected="true" text="Karakterek">
                            <toggleGroup>
                               <ToggleGroup fx:id="default_" />
@@ -91,17 +91,8 @@
                   </HBox>
                   <ImageView fx:id="originalImage" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4" />
                   <ImageView fx:id="imageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <CheckBox fx:id="enableTresholdiingButton" mnemonicParsing="false" onAction="#enableTresholdiing" text="Kézi küszöbölés" GridPane.rowIndex="2" />
-                  <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <children>
-                        <Slider fx:id="treshold" disable="true" prefHeight="37.0" prefWidth="226.0" />
-                        <Button fx:id="applyTresholdButton" disable="true" mnemonicParsing="false" onAction="#applyTreshold" prefWidth="64.0" text="Alkalmaz">
-                           <HBox.margin>
-                              <Insets left="6.0" top="6.0" />
-                           </HBox.margin>
-                        </Button>
-                     </children>
-                  </HBox>
+                  <CheckBox  mnemonicParsing="false" onAction="#enableTresholdiing" text="Kézi küszöbölés" GridPane.rowIndex="2" />
+                  <Slider fx:id="treshold" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <Button fx:id="fullScreen" disable="true" layoutX="431.0" layoutY="334.0" mnemonicParsing="false" onAction="#loadFullScreen" opacity="0" prefHeight="40.0" prefWidth="40.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
