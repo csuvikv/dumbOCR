@@ -24,6 +24,8 @@ function main (impathIN, task, impathOUT, hex_code, threshold, rotate)
     end
 
     img_bw = im2bw(I, threshold);
+    
+    imwrite(img_bw, 'bw_pic_3724863.png')
 
     %figure; imshow(img_bw)
 
