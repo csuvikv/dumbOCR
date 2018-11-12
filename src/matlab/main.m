@@ -1,11 +1,14 @@
-function main (impathIN, task, impathOUT, hex_code)
+function main (impathIN, task, impathOUT, hex_code, threshold, rotate)
     close
 
-%         impathIN = 'testhard.png';
-%         task = 'words';
+%         impathIN = 'testhard_r.png';
+%         task = 'lines';
 %  
-%         impathOUT = 'impathOUT1.png';
+%         impathOUT = 'impathOUT2.png';
 %         hex_code = '#f442e8';
+%         
+%         threshold = 0.80;
+%         rotate = 'rotate';
 
     I = imread(impathIN);
 
@@ -20,7 +23,7 @@ function main (impathIN, task, impathOUT, hex_code)
         I = imnoise(I, noise);
     end
 
-    img_bw = im2bw(I, 0.80);
+    img_bw = im2bw(I, threshold);
 
     %figure; imshow(img_bw)
 
@@ -37,8 +40,51 @@ function main (impathIN, task, impathOUT, hex_code)
         'No noise on the picture'
     end
 
+    %CALCULATE THE ANGLE
+    if strcmp(rotate, 'rotate')
+        
+        img_to_rot = size(img_to_proc);
+        
+        prop = regionprops(img_to_proc, 'BoundingBox');
+        BB = cat(1, prop.BoundingBox);
+        
+        size_of = max(BB(:,4));
+        size_of = round(size_of);
+        
+        min_H = 999999999;
+        for i=1:size(BB,1)
+            for j=i+1:size(BB,1)
+                temp = abs((BB(i,1)-BB(i,3))-BB(j,1));
+                if temp<min_H
+                    min_H = temp;
+                end
+            end
+        end
+        
+        size_of_SE = [min_H+3, size_of];
+        %size_of_SE = [3, 3];
+        
+        SE = strel('rectangle', size_of_SE);
+        img_to_rot = imclose(img_to_proc, SE);
+        
+        prop = regionprops(img_to_rot, 'Orientation');
+        OR = cat(1, prop.Orientation);
+
+        %figure; imshow(img_to_proc);
+
+        img_to_proc = imrotate(img_to_proc, -mean(OR), 'nearest', 'crop');
+        I = imrotate(I, -mean(OR), 'nearest', 'crop');
+
+    end
+    
     prop = regionprops(img_to_proc, 'BoundingBox');
     BB = cat(1, prop.BoundingBox);
+   
+    [x1,y1] = size(img_to_proc);
+    
+    if (BB(1,3) == y1 && BB(1,4) == x1) 
+        BB(1,:) = [];
+    end
 
     % IF WORDS OR LETTERS
     if (strcmp(task, 'words'))
@@ -84,8 +130,8 @@ function main (impathIN, task, impathOUT, hex_code)
         if (min_W == 0)
             min_W=min_W+1;
         end
-
-        size_of_SE = [min_H+3, min_W];
+    
+        size_of_SE = [min_H+4, min_W];
         SE = strel('rectangle', size_of_SE);
         img_to_proc = imclose(img_to_proc, SE);
         
@@ -103,7 +149,7 @@ function main (impathIN, task, impathOUT, hex_code)
             end
         end
         
-        size_of_SE = [min_H+3, size_of];
+        size_of_SE = [min_H+4, size_of];
         SE = strel('rectangle', size_of_SE);
         img_to_proc = imclose(img_to_proc, SE);
         
@@ -113,7 +159,9 @@ function main (impathIN, task, impathOUT, hex_code)
     
     prop = regionprops(img_to_proc, 'BoundingBox');
     BB = cat(1, prop.BoundingBox);
-
+    if (BB(1,3) == y1 && BB(1,4) == x1) 
+        BB(1,:) = [];
+    end
     BB = round(BB);
 
     color = hex2rgb(hex_code, 256);
