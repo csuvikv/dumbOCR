@@ -7,7 +7,7 @@ import javafx.scene.image.Image;
 import view.OcrGUI;
 
 public class Engine {
-	private final static String mPlacePar = "'matlab'";
+	private final static String mPlacePar = "'src/matlab'";
 	private final static String mCommand = "matlab -nodesktop -nosplash -minimize -r";
 	private final static String mFile = "main";
 	private final static String output = "temp/temp.png";
