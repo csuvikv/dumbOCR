@@ -7,25 +7,34 @@ import javafx.scene.image.Image;
 import view.OcrGUI;
 
 public class Engine {
-	private final static String mPlacePar = "'src/matlab'";
+	private final static String mPlacePar = "'matlab'";
 	private final static String mCommand = "matlab -nodesktop -nosplash -minimize -r";
 	private final static String mFile = "main";
 	private final static String output = "temp/temp.png";
 
-	public Image processPicture(String procMode, String color, int numOfMaxTries) throws IOException, InterruptedException {
+	public Image processPicture(String procMode, String color, double threshold, boolean rotate, int numOfMaxTries) throws IOException, InterruptedException {
 		Image result = null;
 		Runtime rt = Runtime.getRuntime();
 		String command = null;
+		String thresholdStr = String.valueOf(threshold);
+		String rotatePar = null;
+		if(rotate) {
+			rotatePar = "'rotate'";
+		} else {
+			rotatePar = "''";
+		}
 		
 		boolean debugMode = true;
 		if(debugMode) {
 			command = mCommand + " \"addpath(" + mPlacePar + "); " + mFile +
 					"('" + OcrGUI.getImageFile().getAbsolutePath() + "','" + procMode +
-					"','" + output + "','" + color + "'); quit\"";
+					"','" + output + "','" + color + "'," + thresholdStr + "," +
+					rotatePar + "); quit\"";
 		} else {
 			command = mCommand + " \"addpath(" + mPlacePar + "); try, " + mFile +
 					"('" + OcrGUI.getImageFile().getAbsolutePath() + "','" + procMode +
-					"','" + output + "','" + color + "'), end; quit\"";
+					"','" + output + "','" + color + "'," + thresholdStr + "," +
+					rotatePar + "), end; quit\"";
 		}
 		
 		System.out.println("exec: " + command);

@@ -132,7 +132,7 @@ public class OcrGUI extends Application {
     		if (color == null) {
     			color = characterColor.getValue();
     		}
-    		processedImage = controller.getProcessedPicture(mode, color.toString(), treshold.getValue());
+    		processedImage = controller.getProcessedPicture(mode, color.toString(), treshold.getValue(), false);
     		
     		if (processedImage == null) {
     			constructWarning("futtatás");
