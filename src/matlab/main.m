@@ -1,13 +1,13 @@
 function main (impathIN, task, impathOUT, hex_code, threshold, rotate)
     close
 
-%         impathIN = 'testhard_r.png';
+%         impathIN = 'test0.png';
 %         task = 'lines';
 %  
 %         impathOUT = 'impathOUT2.png';
 %         hex_code = '#f442e8';
 %         
-%         threshold = 0.80;
+%         threshold = 0.0;
 %         rotate = 'rotate';
 
     I = imread(impathIN);
@@ -49,7 +49,11 @@ function main (impathIN, task, impathOUT, hex_code, threshold, rotate)
         
         prop = regionprops(img_to_proc, 'BoundingBox');
         BB = cat(1, prop.BoundingBox);
-        
+        if (isempty(BB))
+            'No character detected (may be change the BW thresholdvalue)'
+            imwrite(I, impathOUT)
+            return
+        end
         size_of = max(BB(:,4));
         size_of = round(size_of);
         
@@ -83,7 +87,11 @@ function main (impathIN, task, impathOUT, hex_code, threshold, rotate)
     BB = cat(1, prop.BoundingBox);
    
     [x1,y1] = size(img_to_proc);
-    
+    if (isempty(BB))
+        'No character detected (may be change the BW thresholdvalue)'
+        imwrite(I, impathOUT)
+        return
+    end
     if (BB(1,3) == y1 && BB(1,4) == x1) 
         BB(1,:) = [];
     end
@@ -161,6 +169,11 @@ function main (impathIN, task, impathOUT, hex_code, threshold, rotate)
     
     prop = regionprops(img_to_proc, 'BoundingBox');
     BB = cat(1, prop.BoundingBox);
+    if (isempty(BB))
+        'No character detected (may be change the BW thresholdvalue)'
+        imwrite(I, impathOUT)
+        return
+    end
     if (BB(1,3) == y1 && BB(1,4) == x1) 
         BB(1,:) = [];
     end
