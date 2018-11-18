@@ -18,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -30,17 +31,17 @@ import javafx.stage.Stage;
 public class OcrGUI extends Application {
 
 	@FXML
-    private ColorPicker characterColor;
+	private ColorPicker characterColor;
 	
 	@FXML
-    private ColorPicker lineColor;
+	private ColorPicker lineColor;
 	
 	@FXML
-    private ColorPicker paragraphColor;
+	private ColorPicker paragraphColor;
 	
 	@FXML
 	private Button loadFile;
-
+	
 	@FXML
 	private Button fullScreen;
 	
@@ -52,6 +53,9 @@ public class OcrGUI extends Application {
 	
 	@FXML
 	private Slider treshold;
+	
+	@FXML
+	private CheckBox rotateCheckBox;
 	
 	private Label label;
 	private FileChooser fileChooser;
@@ -132,7 +136,7 @@ public class OcrGUI extends Application {
     		if (color == null) {
     			color = characterColor.getValue();
     		}
-    		processedImage = controller.getProcessedPicture(mode, color.toString(), treshold.getValue(), false);
+    		processedImage = controller.getProcessedPicture(mode, color.toString(), treshold.getValue(), rotateCheckBox.isSelected());
     		
     		if (processedImage == null) {
     			constructWarning("futtatás");
@@ -223,6 +227,11 @@ public class OcrGUI extends Application {
     	treshold.setDisable(!treshold.isDisable());
     }
 
+    public void showProperties() {
+    	Properties dialog = new Properties();
+    	dialog.start(stage);
+    }
+    
     public void constructAlert(String errorRoot) {
     	Alert alert = new Alert(AlertType.ERROR);
 		alert.setTitle("Hiba");
@@ -232,7 +241,7 @@ public class OcrGUI extends Application {
     }
     
    public void constructWarning(String errorRoot) {
-	   Alert alert = new Alert(AlertType.WARNING);
+		Alert alert = new Alert(AlertType.WARNING);
 		alert.setTitle("Hiba");
 		alert.setHeaderText("Nem sikerült a " + errorRoot + ".");
 		alert.setContentText("Próbálja újra.");
@@ -275,5 +284,7 @@ public class OcrGUI extends Application {
 		OcrGUI.imageFile = imageFile;
 	}
     
-   
+	public String getPath() {
+		return Properties.getPath();
+	}
 }

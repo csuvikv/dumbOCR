@@ -21,6 +21,7 @@ public class OcrController {
 
 	public Image getProcessedPicture(String ProcessMode, String color, double threshold, boolean rotate) {
 		Image result = null;
+		setMatlabPath();
 		try {
 			result = engine.processPicture(ProcessMode, color, threshold, rotate, 300);
 		} catch (IOException e) {
@@ -35,5 +36,14 @@ public class OcrController {
 	
 	public Image getLoadedImage() {
 		return new Image(OcrGUI.getImageFile().toURI().toString());
+	}
+	
+	public void setMatlabPath() {
+		String path = gui.getPath();
+		if ("".equals(path)) {
+			System.out.println("AUTOMATIC PATH");
+		} else {
+			System.out.println("MANUAL PATH: " + path);
+		}
 	}
 }

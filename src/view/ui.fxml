@@ -27,6 +27,7 @@
         <Menu mnemonicParsing="false" text="Fájl">
           <items>
             <MenuItem mnemonicParsing="false" onAction="#saveMenuAction" text="Mentés..." />
+                  <MenuItem mnemonicParsing="false" onAction="#showProperties" text="Beállítások" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#quitMenuAction" text="Kilépés" />
           </items>
@@ -38,7 +39,7 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane fx:id="fullScreenButton" maxHeight="-1.0" maxWidth="-1.0" minHeight="540.0" onMouseClicked="#loadFullScreen" prefHeight="540.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+    <AnchorPane fx:id="fullScreenButton" maxHeight="-1.0" maxWidth="-1.0" minHeight="540.0" prefHeight="540.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
          <children>
             <GridPane layoutX="14.0" layoutY="12.0" prefHeight="348.0" prefWidth="612.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0">
               <columnConstraints>
@@ -68,7 +69,7 @@
                      <children>
                         <ColorPicker fx:id="lineColor" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <ColorPicker fx:id="paragraphColor" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <ColorPicker fx:id="characterColor" disable="false" GridPane.columnIndex="1"/>
+                        <ColorPicker fx:id="characterColor" disable="false" GridPane.columnIndex="1" />
                         <RadioButton fx:id="characterCB" mnemonicParsing="false" onAction="#enableCharacter" selected="true" text="Karakterek">
                            <toggleGroup>
                               <ToggleGroup fx:id="default_" />
@@ -91,8 +92,9 @@
                   </HBox>
                   <ImageView fx:id="originalImage" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="4" />
                   <ImageView fx:id="imageView" fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <CheckBox  mnemonicParsing="false" onAction="#enableTresholdiing" text="Kézi küszöbölés" GridPane.rowIndex="2" />
+                  <CheckBox mnemonicParsing="false" onAction="#enableTresholdiing" text="Kézi küszöbölés" GridPane.rowIndex="2" />
                   <Slider fx:id="treshold" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <CheckBox fx:id="rotateCheckBox" mnemonicParsing="false" text="Kép automatikus forgatása" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
             </GridPane>
             <Button fx:id="fullScreen" disable="true" layoutX="431.0" layoutY="334.0" mnemonicParsing="false" onAction="#loadFullScreen" opacity="0" prefHeight="40.0" prefWidth="40.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
