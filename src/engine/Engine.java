@@ -8,32 +8,38 @@ import view.OcrGUI;
 
 public class Engine {
 	private final static String mPlacePar = "'src/matlab'";
-	private final static String mCommand = "matlab -nodesktop -nosplash -minimize -r";
+	private final static String mFlags = "-nodesktop -nosplash -minimize -r";
 	private final static String mFile = "main";
 	private final static String output = "temp/temp.png";
 
-	public Image processPicture(String procMode, String color, double threshold, boolean rotate, int numOfMaxTries) throws IOException, InterruptedException {
+	public Image processPicture(String matlabPath, String procMode, String color, double threshold, boolean rotate, int numOfMaxTries) throws IOException, InterruptedException {
 		Image result = null;
 		Runtime rt = Runtime.getRuntime();
 		String command = null;
-		String thresholdStr = String.valueOf(threshold);
+		String thresholdStr = String.valueOf(threshold/100.0);
 		String rotatePar = null;
+		if(matlabPath.equals("")) {
+			matlabPath = "matlab";
+		} else {
+			matlabPath += "/matlab.exe";
+		}
 		if(rotate) {
 			rotatePar = "'rotate'";
 		} else {
 			rotatePar = "''";
 		}
+	
 		
 		boolean debugMode = true;
 		if(debugMode) {
-			command = mCommand + " \"addpath(" + mPlacePar + "); " + mFile +
+			command = matlabPath + " " + mFlags + " \"addpath(" + mPlacePar + "); " + mFile +
 					"('" + OcrGUI.getImageFile().getAbsolutePath() + "','" + procMode +
-					"','" + output + "','" + color + "'," + thresholdStr + "," +
+					"','" + output + "','#" + color.substring(2, 8) + "'," + thresholdStr + "," +
 					rotatePar + "); quit\"";
 		} else {
-			command = mCommand + " \"addpath(" + mPlacePar + "); try, " + mFile +
+			command = matlabPath + " " + mFlags + " \"addpath(" + mPlacePar + "); try, " + mFile +
 					"('" + OcrGUI.getImageFile().getAbsolutePath() + "','" + procMode +
-					"','" + output + "','" + color + "'," + thresholdStr + "," +
+					"','" + output + "','#" + color.substring(4, 10) + "'," + thresholdStr + "," +
 					rotatePar + "), end; quit\"";
 		}
 		

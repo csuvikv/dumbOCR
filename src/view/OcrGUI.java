@@ -105,6 +105,9 @@ public class OcrGUI extends Application {
 				    }
 				});
 	        
+	        treshold = (Slider) primaryStage.getScene().lookup("#treshold");
+	        treshold.setValue(50);
+	        
 	        primaryStage.show();
 	        
 		} else {
@@ -136,6 +139,15 @@ public class OcrGUI extends Application {
     		if (color == null) {
     			color = characterColor.getValue();
     		}
+    		
+    		if (!lineColor.isDisabled()) {
+    			color = lineColor.getValue();
+    		} else if (!characterColor.isDisabled()) {
+    			color = characterColor.getValue();
+    		} else {
+    			color = paragraphColor.getValue();
+    		}
+    		
     		processedImage = controller.getProcessedPicture(mode, color.toString(), treshold.getValue(), rotateCheckBox.isSelected());
     		
     		if (processedImage == null) {
